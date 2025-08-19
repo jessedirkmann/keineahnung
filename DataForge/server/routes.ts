@@ -64,6 +64,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Web search via OpenAI tool
+  app.post("/api/web-search", async (req, res) => {
+    try {
+      const { apiKey, query } = req.body;
+      const openaiService = new OpenAIService(apiKey);
+      const result = await openaiService.webSearch(query);
+      res.json({ result });
+    } catch (error) {
+      res.status(500).json({ message: "Error performing web search" });
+    }
+  });
+
   // Estimate cost
   app.post("/api/estimate-cost", async (req, res) => {
     try {

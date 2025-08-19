@@ -101,6 +101,19 @@ Always provide reasonable values based on the available information. Do not leav
     }
   }
 
+  async webSearch(query: string): Promise<string> {
+    try {
+      const response = await this.openai.responses.create({
+        model: "gpt-4o-mini",
+        input: [{ role: "user", content: query }],
+        tools: [{ type: "web_search_preview" }]
+      });
+      return response.output_text || "";
+    } catch (error) {
+      throw new Error(`OpenAI web search error: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  }
+
   calculateCost(tokens: number, model: string = "gpt-4o-mini"): number {
     // Pricing per 1M tokens for gpt-4o-mini
     const pricePerMillionTokens = 0.150; // $0.150 per 1M input tokens
